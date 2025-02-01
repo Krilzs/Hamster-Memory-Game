@@ -9,6 +9,7 @@ function Gameboard() {
     const [board_cards, setBoard_cards] = useState([]);
     const [theme, setTheme] = useState('hamster');
     const [difficulty, setDifficulty] = useState(4);
+    const [lifes, setLifes] = useState(3);
     useEffect(() => {
 
         const fetchCards = async () => {
@@ -17,24 +18,40 @@ function Gameboard() {
             setConnected(true);
         }
         fetchCards();
-    }, [theme, difficulty]);
+    }, [theme, difficulty, lifes]);
     const [gameover, setGameover] = useState(false);
     const [score, setScore] = useState(0);
+    
     const [max_score, setMax_score] = useState(0);
     const [flippedCards, setFlippedCards] = useState({});
 
-    const handleScore = (id) => {
-        if(!flippedCards[id] || score<=difficulty - 1){
+    const resetGame = (status) => {
+        if (!status){
+            if(lifes > 0){
+                setLifes(lifes - 1);
+            }
+        }else{
+            setDifficulty(difficulty + 2);
+        }
+        setFlippedCards({});
+        setMax_score(score > max_score ? score : max_score);
+        setScore(0);
+        setGameover(!gameover);
+    }
 
-            setFlippedCards({...flippedCards, [id]: true})
-            setScore(score + 1)
+
+    const handleScore = (id) => {
+        if(score<difficulty){
+            if(!flippedCards[id]){
+                setFlippedCards({...flippedCards, [id]: true})
+                setScore(score + 1)
+            }
+            else{
+                resetGame(false);
+            }
         }
         else{   
-            setFlippedCards({});
-            setMax_score(score > max_score ? score : max_score);
-            setScore(0);
-            setDifficulty(difficulty + 2);
-            setGameover(!gameover);
+            resetGame(true);
         }
     }
 
@@ -55,6 +72,17 @@ function Gameboard() {
         setTheme(e.target.value);
     }
 
+    if(score >= difficulty || lifes <= 0){
+        debugger;
+        if(lifes <= 0){
+            setLifes(3);
+            setDifficulty(difficulty - 2);
+            resetGame(false);
+        }
+        else{
+            resetGame(true);
+        }
+    }
 
 
     return (
@@ -64,9 +92,11 @@ function Gameboard() {
                     <h2>The Memory Game</h2>
                     <p>Click on a card to start, when you click on the same card you lose</p>
                 </span>
-                <span>
+                <span className='stats'>
+                    <h4>Lifes: {lifes}</h4>
+                    <h4>Difficulty: {difficulty}</h4>
                     <h4>Score: {score}</h4>
-                        <h4>Best: {max_score}</h4>
+                    <h4>Best: {max_score}</h4>
                 </span>
                 <form >
                     <label htmlFor="theme">Select a theme</label>
