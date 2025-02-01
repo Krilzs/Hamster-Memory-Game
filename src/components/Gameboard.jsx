@@ -8,7 +8,9 @@ function Gameboard() {
     const [connected, setConnected] = useState(false);
     const [board_cards, setBoard_cards] = useState([]);
     const [theme, setTheme] = useState('hamster');
-    const [difficulty, setDifficulty] = useState(4);
+    const [difficulty, setDifficulty] = useState(() => {
+        return Number(localStorage.getItem("difficulty")) || 4;
+    });
     const [lifes, setLifes] = useState(3);
     useEffect(() => {
 
@@ -19,6 +21,13 @@ function Gameboard() {
         }
         fetchCards();
     }, [theme, difficulty, lifes]);
+
+
+    useEffect(() => {
+        localStorage.setItem("difficulty", difficulty);
+    }, [difficulty]);
+
+
     const [gameover, setGameover] = useState(false);
     const [score, setScore] = useState(0);
     
