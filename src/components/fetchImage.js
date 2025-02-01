@@ -1,8 +1,6 @@
 const apiKey = 'tiUuRMLmZxIVYPUMyHJgwX7UcQACrbdSeO3ep0omXNoTcGXbWUOQS0kt'
-const query = 'hamsters'
-const numPhotos = 12;
 
-export const fetchBoardCards = async () => {
+export const fetchBoardCards = async (query, numPhotos) => {
     try {
         const response = await fetch (`https://api.pexels.com/v1/search?query=${query}&per_page=${numPhotos}`, {
             headers: {
